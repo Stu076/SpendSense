@@ -23,3 +23,27 @@ go.work.sum
 
 # env file
 .env
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Log files
+*.log 
+
+# Temporary files
+*.tmp
+
+# Directory for file-based locks
+.lock/
+
+# IDE files
+.idea/
+.vscode/
+
+# Atlas files
+atlas.hcl
+atlas.sum
