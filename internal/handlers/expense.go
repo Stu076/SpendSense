@@ -15,7 +15,12 @@ type ExpenseHandler struct {
 }
 
 func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
-	username, _ := c.Get("username")
+	username, exists := c.Get("username")
+
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
 
 	var expense models.Expense
 	if err := c.ShouldBindJSON(&expense); err != nil {
@@ -41,7 +46,12 @@ func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 }
 
 func (h *ExpenseHandler) GetExpenses(c *gin.Context) {
-	username, _ := c.Get("username")
+	username, exists := c.Get("username")
+
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
 
 	var user models.User
 	err := h.DB.NewSelect().Model(&user).Where("username = ?", username).Scan(context.Background())
@@ -61,12 +71,23 @@ func (h *ExpenseHandler) GetExpenses(c *gin.Context) {
 }
 
 func (h *ExpenseHandler) DeleteExpense(c *gin.Context) {
-	username, _ := c.Get("username")
-	expenseID, _ := strconv.Atoi(c.Param("id"))
+	username, exists := c.Get("username")
+
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		return
+	}
+
+	expenseID, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid expense ID"})
+		return
+	}
 
 	// Get User ID
 	var user models.User
-	err := h.DB.NewSelect().Model(&user).Where("username = ?", username).Scan(context.Background())
+	err = h.DB.NewSelect().Model(&user).Where("username = ?", username).Scan(context.Background())
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 		return
