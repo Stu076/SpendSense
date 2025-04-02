@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/Stu076/SpendSense/config"
+	"github.com/Stu076/SpendSense/internal/cache"
 	"github.com/Stu076/SpendSense/internal/handlers"
 	"github.com/Stu076/SpendSense/internal/middlewares"
 	"github.com/Stu076/SpendSense/internal/repositories"
@@ -16,6 +17,8 @@ func main() {
 	if !confStatus {
 		panic("Error initializing config")
 	}
+
+	cache.InitRedis()
 
 	db := repositories.MustSetupDatabase()
 
