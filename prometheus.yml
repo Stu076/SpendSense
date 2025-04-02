@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "expense-tracker"
+    static_configs:
+      - targets: ["host.docker.internal:8080"]
+      # - targets: ["db:5432", "redis:6379", "http://localhost:8080"]
+    metrics_path: /metrics
